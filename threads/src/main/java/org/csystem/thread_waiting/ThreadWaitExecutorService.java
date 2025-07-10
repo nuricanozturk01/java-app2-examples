@@ -37,6 +37,7 @@ public class ThreadWaitExecutorService {
     for (var future : futures)
       join(future);
 
+    // BARRIER
     int negativeCount = 0;
 
     for (var tp : params)

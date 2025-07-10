@@ -33,6 +33,7 @@ public class ThreadWaitJoin {
     for (Thread t : threads)
       join(t);
 
+    // BARRIER
     for (var tp : params)
       Console.writeLine(tp);
   }
