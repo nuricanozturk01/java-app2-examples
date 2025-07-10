@@ -47,7 +47,7 @@ public class ThreadWaitExecutorService {
         Console.writeLine(tp);
       }
 
-    Console.writeLine("Positive: " + (THREAD_COUNT - negativeCount) + " Negative: " + (negativeCount));
+    Console.writeLine("Positive: " + (THREAD_COUNT - negativeCount) + " Negative: " + negativeCount);
     threadPool.shutdown();
 
   }
