@@ -9,8 +9,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * <h3>Thread Cancellation Point</h3>
  * Thread sınıfının {@code join()}, Executor servisinin {@code get()}
- * ({@code Future.get()}), {@code Thread.sleep()}, {@code Object.wait()}
- * gibi metotları <strong>Thread Cancellation Point</strong> metodlarıdır.
+ * ({@code Future.get()}), {@code Thread.sleep()}, {@code Object.wait()}, {@code semaphore.acquire()}
+ * {@code semaphore.release()} gibi metotları <strong>Thread Cancellation Point</strong> metodlarıdır.
  * Bu metotlar {@code InterruptedException} fırlatarak thread'in graceful
  * shutdown mekanizmasını destekler. (interrupt flag değerini temizler)
  *
