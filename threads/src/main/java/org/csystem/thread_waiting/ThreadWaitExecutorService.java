@@ -3,13 +3,14 @@ package org.csystem.thread_waiting;
 import com.karandev.util.console.Console;
 import lombok.Data;
 
+import java.security.SecureRandom;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class ThreadWaitExecutorService {
-  private static final int MIN = 1, MAX = 2, THREAD_COUNT = 100, COUNT = 50;
+  private static final int MIN = -5_000, MAX = 5_000, THREAD_COUNT = 100, COUNT = 1500;
 
   private static void join(Future<?> future) {
     try {
@@ -30,20 +31,29 @@ public class ThreadWaitExecutorService {
       final var threadName = "Thread-%d".formatted(idx + 1);
       params[i] = new ThreadParams(threadName);
 
-      futures[i] = threadPool.submit(() -> ThreadWaitExecutorService.findTotalCallback(params[idx]));
+      futures[i] = threadPool.submit(() -> ThreadWaitExecutorService.findTotalCallback(params[idx], System.currentTimeMillis()));
     }
 
     for (var future : futures)
       join(future);
 
-    for (var tp : params)
-      Console.writeLine(tp);
+    int negativeCount = 0;
 
+    for (var tp : params)
+      if (tp.result > 0)
+        Console.writeLine(tp);
+      else {
+        negativeCount++;
+        Console.writeLine(tp);
+      }
+
+    Console.writeLine("Positive: " + (THREAD_COUNT - negativeCount) + " Negative: " + (negativeCount));
     threadPool.shutdown();
+
   }
 
-  private static void findTotalCallback(final ThreadParams param) {
-    final var random = new Random();
+  private static void findTotalCallback(final ThreadParams param, long t) {
+    final var random = new Random(t);
 
     for (int i = 0; i < COUNT; i++)
       param.add(random.nextInt(MIN, MAX));
