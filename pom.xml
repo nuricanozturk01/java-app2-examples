@@ -17,6 +17,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>threads</module>
+        <module>sockets</module>
     </modules>
 
     <properties>
