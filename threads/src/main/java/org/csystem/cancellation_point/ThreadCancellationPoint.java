@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
  *       durumunda olmadığı için sleep metodu normal çalışmaya devam eder</li>
  * </ol>
  */
+@SuppressWarnings("all")
 class ThreadCancellationPoint {
   private static void threadCallback1() {
     var random = new Random();

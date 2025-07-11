@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 
+@SuppressWarnings("all")
 public class ProducerConsumerArrayDeque {
   private static final int QUEUE_SIZE = 10;
   private final ExecutorService m_executorService = Executors.newFixedThreadPool(2);

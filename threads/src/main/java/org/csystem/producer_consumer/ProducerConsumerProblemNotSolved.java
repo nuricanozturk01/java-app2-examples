@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+@SuppressWarnings("all")
 public class ProducerConsumerProblemNotSolved {
   private final ExecutorService m_executorService = Executors.newFixedThreadPool(2);
   private int m_value = -1;

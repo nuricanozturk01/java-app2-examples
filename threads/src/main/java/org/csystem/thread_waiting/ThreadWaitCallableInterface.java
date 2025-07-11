@@ -47,6 +47,7 @@ import static java.lang.System.currentTimeMillis;
  *       durumu kontrol edebilir</li>
  * </ol>
  */
+@SuppressWarnings("all")
 public class ThreadWaitCallableInterface {
   private static final int MIN = 1, MAX = 2, THREAD_COUNT = 100, COUNT = 50;
 

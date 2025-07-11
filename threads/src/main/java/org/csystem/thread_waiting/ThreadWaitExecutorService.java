@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+@SuppressWarnings("all")
 public class ThreadWaitExecutorService {
   private static final int MIN = -5_000, MAX = 5_000, THREAD_COUNT = 100, COUNT = 1500;
 

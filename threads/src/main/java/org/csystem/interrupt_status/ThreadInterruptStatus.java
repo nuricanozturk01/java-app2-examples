@@ -5,6 +5,7 @@ import org.csystem.util.concurrent.ThreadUtil;
 
 import java.util.concurrent.TimeUnit;
 
+
 /**
  * {@code isInterrupted()} metodu, ilgili thread’in interrupt bayrağını kontrol eder fakat sıfırlamaz. Bu nedenle threadCallback1
  * metodundaki ilk döngü {@code isInterrupted()} ile çalışırken, thread interrupt edildiğinde bayrak true olur ve döngü sonlanır.
@@ -17,6 +18,7 @@ import java.util.concurrent.TimeUnit;
  * Ayrıca, t2 thread’i {@code Thread.interrupted()} metodunun çağrısıyla bayrağı sıfırladığı için ikinci kez interrupt()
  * çağrıldığında bayrak yeniden true olur ve bu, ikinci döngüyü sonlandırabilir
  */
+@SuppressWarnings("all")
 class ThreadInterruptStatus {
   private static void threadCallback1() {
     var a = 0L;

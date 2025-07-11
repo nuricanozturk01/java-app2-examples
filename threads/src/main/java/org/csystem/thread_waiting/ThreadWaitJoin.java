@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.util.Random;
 
+@SuppressWarnings("all")
 public class ThreadWaitJoin {
   private static final int MIN = 1, MAX = 2, THREAD_COUNT = 10, COUNT = 50;
 

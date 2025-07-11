@@ -7,7 +7,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Semaphore;
 
-
 /**
  * Producer-Consumer Pattern Implementation with Binary Semaphore
  * <p>
@@ -109,6 +108,7 @@ import java.util.concurrent.Semaphore;
  * <p><strong>Önemli Not:</strong> Semaphore'da başka bir thread tarafından kritik bölge
  * kontrolü yapılabilir (No Ownership özelliği nedeniyle).
  */
+@SuppressWarnings("all")
 public class ProducerConsumerBinarySemaphore {
   private final ExecutorService m_executorService = Executors.newFixedThreadPool(2);
 
