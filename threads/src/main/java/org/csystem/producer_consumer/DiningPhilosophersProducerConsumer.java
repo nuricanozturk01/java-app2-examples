@@ -30,36 +30,32 @@ import java.util.concurrent.TimeUnit;
  *     <li>{@link DiningTable} - Filozofların ve garsonun senkronize çalıştığı ortam.</li>
  * </ul>
  */
+
 @SuppressWarnings("all")
 public class DiningPhilosophersProducerConsumer {
   private static final int PHILOSOPHER_COUNT = 5;
   private static final int WAITER_COUNT = 1;
   private static final int REQUEST_QUEUE_SIZE = 10;
-
   private final ExecutorService m_threadPool;
   private final Deque<Philosopher> m_philosophers;
   private final Deque<Philosopher> m_requestQueue;
-
   private final Semaphore[] m_forkSemaphores;
+  private final Semaphore[] m_waitingPermitPhilosophers;
   private final Semaphore m_pendingRequests;
   private final Semaphore m_requestSlots;
-  private final Semaphore[] m_waitingPermitPhilosophers;
-
   private final Object m_queueLock = new Object();
 
   public DiningPhilosophersProducerConsumer() {
     m_threadPool = Executors.newFixedThreadPool(PHILOSOPHER_COUNT + WAITER_COUNT);
     m_philosophers = new LinkedList<>();
     m_requestQueue = new ArrayDeque<>();
-
     m_forkSemaphores = new Semaphore[PHILOSOPHER_COUNT];
     m_waitingPermitPhilosophers = new Semaphore[PHILOSOPHER_COUNT];
     m_pendingRequests = new Semaphore(0);
     m_requestSlots = new Semaphore(REQUEST_QUEUE_SIZE);
 
-    char philosopherName = 'A';
-    for (int i = 0; i < PHILOSOPHER_COUNT; i++) {
-      m_philosophers.addLast(new Philosopher("Philosopher-" + philosopherName++, i));
+    for (int i = 0, philosopherName = 'A'; i < PHILOSOPHER_COUNT; i++) {
+      m_philosophers.addLast(new Philosopher("Philosopher-" + (char) philosopherName++, i));
       m_forkSemaphores[i] = new Semaphore(1);
       m_waitingPermitPhilosophers[i] = new Semaphore(0);
     }
@@ -68,52 +64,12 @@ public class DiningPhilosophersProducerConsumer {
             PHILOSOPHER_COUNT, WAITER_COUNT);
   }
 
-  public void run() throws InterruptedException {
-    Console.writeLine("Starting dining simulation...");
-
-    m_philosophers.forEach(philosopher ->
-            m_threadPool.submit(() -> philosopherCallback(philosopher))
-    );
-
-    m_threadPool.submit(this::waiterCallback);
-
-    m_threadPool.shutdown();
-
-    try {
-      while (!m_threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS)) {
-        // Continue waiting
-      }
-      Console.writeLine("Dining simulation completed successfully");
-    } catch (InterruptedException e) {
-      Console.Error.writeLine("Simulation interrupted - forcing shutdown");
-      m_threadPool.shutdownNow();
-      Thread.currentThread().interrupt();
-    }
-  }
-
-  private Void philosopherCallback(final Philosopher philosopher) throws InterruptedException {
-    try {
-      think(philosopher);
-      requestEating(philosopher);
-      eat(philosopher);
-      finishEating(philosopher);
-
-      Console.writeLine("%s completed dining session", philosopher.name());
-      return null;
-
-    } catch (InterruptedException e) {
-      Console.Error.writeLine("%s was interrupted during dining", philosopher.name());
-      Thread.currentThread().interrupt();
-      return null;
-    }
-  }
-
   private void think(final Philosopher philosopher) {
     Console.writeLine("%s is thinking", philosopher.name());
     ThreadUtil.sleep(50, TimeUnit.MILLISECONDS);
   }
 
-  private void requestEating(Philosopher philosopher) throws InterruptedException {
+  private void requestEating(final Philosopher philosopher) throws InterruptedException {
     Console.writeLine("%s request for eating", philosopher.name());
 
     m_requestSlots.acquire();
@@ -141,38 +97,7 @@ public class DiningPhilosophersProducerConsumer {
     m_forkSemaphores[secondFork].release();
     m_forkSemaphores[firstFork].release();
 
-    Console.writeLine("%s finished eating - returned forks %d and %d",
-            philosopher.name(), firstFork, secondFork);
-  }
-
-  private Void waiterCallback() throws InterruptedException {
-    int processedRequests = 0;
-    final int totalExpectedRequests = PHILOSOPHER_COUNT;
-
-    Console.writeLine("Waiter started service");
-
-    try {
-      while (processedRequests < totalExpectedRequests) {
-        m_pendingRequests.acquire();
-
-        final Philosopher philosopher;
-        synchronized (m_queueLock) {
-          philosopher = m_requestQueue.removeFirst();
-        }
-        m_requestSlots.release();
-
-        processPhilosopherRequest(philosopher);
-        processedRequests++;
-      }
-
-      Console.writeLine("Waiter completed service");
-      return null;
-
-    } catch (InterruptedException e) {
-      Console.Error.writeLine("Waiter service was interrupted");
-      Thread.currentThread().interrupt();
-      return null;
-    }
+    Console.writeLine("%s finished eating - returned forks %d and %d", philosopher.name(), firstFork, secondFork);
   }
 
   private void processPhilosopherRequest(final Philosopher philosopher) throws InterruptedException {
@@ -187,24 +112,63 @@ public class DiningPhilosophersProducerConsumer {
     m_forkSemaphores[firstFork].acquire();
     m_forkSemaphores[secondFork].acquire();
 
-    Console.writeLine("Waiter gave forks %d and %d to %s",
-            firstFork, secondFork, philosopher.name());
+    Console.writeLine("Waiter gave forks %d and %d to %s", firstFork, secondFork, philosopher.name());
 
     m_waitingPermitPhilosophers[philosopher.place()].release();
+  }
+
+  private Void waiterCallback() throws InterruptedException {
+    Console.writeLine("Waiter started service");
+
+    for (int processedRequests = 0; processedRequests < PHILOSOPHER_COUNT; processedRequests++) {
+      m_pendingRequests.acquire();
+
+      final Philosopher philosopher;
+      synchronized (m_queueLock) {
+        philosopher = m_requestQueue.removeFirst();
+      }
+      m_requestSlots.release();
+
+      processPhilosopherRequest(philosopher);
+    }
+
+    Console.writeLine("Waiter completed service");
+    return null;
+  }
+
+  private Void philosopherCallback(final Philosopher philosopher) throws InterruptedException {
+    think(philosopher);
+    requestEating(philosopher);
+    eat(philosopher);
+    finishEating(philosopher);
+
+    Console.writeLine("%s completed dining session", philosopher.name());
+    return null;
+  }
+
+  public void run() throws InterruptedException {
+    Console.writeLine("Starting dining simulation...");
+
+    m_philosophers.forEach(philosopher -> m_threadPool.submit(() -> philosopherCallback(philosopher)));
+
+    m_threadPool.submit(this::waiterCallback);
+
+    m_threadPool.shutdown();
+
+    if (m_threadPool.awaitTermination(60, TimeUnit.SECONDS)) {
+      Console.Error.writeLine("Dining simulation completed successfully");
+    }
   }
 
   public static void main(String[] args) {
     try {
       final var diningSimulation = new DiningPhilosophersProducerConsumer();
       diningSimulation.run();
-
     } catch (InterruptedException e) {
       Console.Error.writeLine("Application interrupted");
       Thread.currentThread().interrupt();
-
     } catch (Exception e) {
       Console.Error.writeLine("Unexpected error: %s", e.getMessage());
-      e.printStackTrace();
     }
   }
 }
