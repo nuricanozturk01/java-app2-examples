@@ -1,19 +1,14 @@
 package org.csystem.thread_waiting;
 
-import com.karandev.util.console.Console;
-import lombok.Data;
+import com.karandev.io.util.console.Console;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-import java.util.concurrent.Callable;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.stream.IntStream;
 import java.util.stream.LongStream;
-
-import static java.lang.System.currentTimeMillis;
 
 /**
  * Callable Interface ve Future Kullanımı Demonstrasyonu

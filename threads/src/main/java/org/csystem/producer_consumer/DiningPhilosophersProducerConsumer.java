@@ -1,6 +1,6 @@
 package org.csystem.producer_consumer;
 
-import com.karandev.util.console.Console;
+import com.karandev.io.util.console.Console;
 import org.csystem.producer_consumer.model.Philosopher;
 import org.csystem.util.concurrent.ThreadUtil;
 

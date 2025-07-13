@@ -1,13 +1,9 @@
-package org.csystem.udp.demo;
+package org.csystem.udp.udp_util;
 
 import com.karandev.io.util.console.Console;
+import com.karandev.util.net.UdpUtil;
 import org.csystem.util.string.StringUtil;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.nio.charset.StandardCharsets;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -34,12 +30,9 @@ public class Sender {
   }
 
   private void scheduledMessageCallback() {
-    try (final var datagramSocket = new DatagramSocket()) {
-      final var message = StringUtil.getRandomTextEN(random, 30).getBytes(StandardCharsets.UTF_8);
-      final var datagramPacket = new DatagramPacket(message, message.length, InetAddress.getByName(host), port);
-
-      datagramSocket.send(datagramPacket);
-    } catch (final IOException e) {
+    try {
+      UdpUtil.sendString(host, port, StringUtil.getRandomTextEN(random, 30));
+    } catch (final Throwable e) {
       Console.Error.writeLine(e.getMessage());
     }
   }

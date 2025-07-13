@@ -1,6 +1,6 @@
 package org.csystem.interrupt_status;
 
-import com.karandev.util.console.Console;
+import com.karandev.io.util.console.Console;
 import org.csystem.util.concurrent.ThreadUtil;
 
 import java.util.concurrent.TimeUnit;

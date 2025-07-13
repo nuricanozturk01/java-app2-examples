@@ -1,4 +1,4 @@
-package org.csystem.udp.demo;
+package org.csystem.udp.broadcast;
 
 import com.karandev.io.util.console.Console;
 import org.csystem.util.string.StringUtil;
@@ -45,7 +45,7 @@ public class Sender {
   }
 
   public static void main(String[] args) {
-    final var sender = new Sender("localhost", 4444);
+    final var sender = new Sender("192.168.1.255", 4444);
     sender.run();
   }
 }

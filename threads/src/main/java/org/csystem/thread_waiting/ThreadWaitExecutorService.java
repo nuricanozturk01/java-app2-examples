@@ -1,9 +1,8 @@
 package org.csystem.thread_waiting;
 
-import com.karandev.util.console.Console;
+import com.karandev.io.util.console.Console;
 import lombok.Data;
 
-import java.security.SecureRandom;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;

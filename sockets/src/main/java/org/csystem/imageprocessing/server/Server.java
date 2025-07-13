@@ -1,6 +1,6 @@
 package org.csystem.imageprocessing.server;
 
-import com.karandev.util.console.Console;
+import com.karandev.io.util.console.Console;
 
 import java.io.IOException;
 import java.net.ServerSocket;

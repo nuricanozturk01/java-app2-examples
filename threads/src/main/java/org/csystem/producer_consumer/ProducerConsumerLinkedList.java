@@ -1,6 +1,6 @@
 package org.csystem.producer_consumer;
 
-import com.karandev.util.console.Console;
+import com.karandev.io.util.console.Console;
 
 import java.util.Deque;
 import java.util.LinkedList;

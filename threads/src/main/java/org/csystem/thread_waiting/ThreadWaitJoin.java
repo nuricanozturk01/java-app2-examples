@@ -1,6 +1,6 @@
 package org.csystem.thread_waiting;
 
-import com.karandev.util.console.Console;
+import com.karandev.io.util.console.Console;
 import lombok.Data;
 
 import java.util.Random;
